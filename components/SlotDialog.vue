@@ -41,8 +41,9 @@
                   <AutoComplete
                     :items="courses"
                     item-text="name"
-                    item-value="id"
+                    item-value="course_code"
                     v-model:model-value="selectedCourse"
+                    return-object
                   />
                 </div>
 
@@ -65,22 +66,22 @@
 </template>
 
 <script setup lang="ts">
-import type { Course } from "~/types/global";
+import type { ICourse } from "~/types/global";
 
-import { courses } from "@/assets/data";
-
-const selectedCourse = ref<null | Course>(null);
+const selectedCourse = ref<null | ICourse>(null);
 
 interface Props {
-  course: Course | null;
+  course: ICourse | null;
   modelValue: boolean;
+  courses: ICourse[];
 }
 
-const { course = null, modelValue = false } = defineProps<Props>();
+const { course = null, modelValue = false, courses } = defineProps<Props>();
 
 const emit = defineEmits(["update:course", "update:modelValue"]);
 
 const closeModal = () => {
+  selectedCourse.value = null;
   emit("update:modelValue", false);
 };
 
@@ -91,7 +92,7 @@ watch(
 
     if (course) {
       selectedCourse.value =
-        courses.value.find((course) => course.id === course.id) || null;
+        courses.find((course) => course.course_code === course.course_code) || null;
     }
   }
 );

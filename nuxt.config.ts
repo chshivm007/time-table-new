@@ -7,11 +7,18 @@ export default defineNuxtConfig({
     '@nuxtjs/tailwindcss',
     "nuxt-headlessui",
     'nuxt-headlessui',
+    // '@nuxt/ui',
   ],
   devServer: {
     port: 8080,
   },
   headlessui: {
     prefix: ''
+  },
+  runtimeConfig: {
+    MONGO_URI: process.env.MONGO_URI,
+  },
+  tailwindcss: {
+    cssPath: '~/assets/css/input.css'
   }
 })

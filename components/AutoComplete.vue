@@ -6,7 +6,7 @@
         >
           <ComboboxInput
             class="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
-            :displayValue="(person) => (person?.[itemText] || '')"
+            :displayValue="(person) => (accessText(person) || 'No Val')"
             @change="query = $event.target.value"
           />
           <ComboboxButton
@@ -25,7 +25,7 @@
           @after-leave="query = ''"
         >
           <ComboboxOptions
-            class="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm"
+            class="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm z-20"
           >
             <div
               v-if="filteredItems.length === 0 && query !== ''"
@@ -37,7 +37,7 @@
             <ComboboxOption
               v-for="person in filteredItems"
               as="template"
-              :key="person[itemValue]"
+              :key="accessVal(person)"
               :value="person"
               v-slot="{ selected, active }"
             >
@@ -52,7 +52,7 @@
                   class="block truncate"
                   :class="{ 'font-medium': selected, 'font-normal': !selected }"
                 >
-                  {{ person[itemText] }}
+                  {{ accessText(person) }}
                 </span>
                 <span
                   v-if="selected"
@@ -83,30 +83,61 @@ import { CheckIcon, ChevronUpDownIcon } from '@heroicons/vue/20/solid'
 
 
 interface Props {
-  modelValue: Record<string, any> | null,
-  items: Record<string, any>[],
+  modelValue: Record<string, any> | string | number | null,
+  items: Record<string, any>[] | string[] | number[],
   itemText: string,
-  itemValue: string
+  itemValue: string,
+  returnObject?: boolean,
 }
 
 
-const { modelValue = null, items = [], itemText = "text", itemValue = "value"} = defineProps<Props>();
+const { modelValue = null, items = [], itemText = "text", itemValue = "value", returnObject = false} = defineProps<Props>();
 
 const emit = defineEmits(['update:modelValue']);
 
 const onSelect = (value: Object) => {
   selected.value = value;
-  emit('update:modelValue', value);
+
+  if (returnObject) {
+    emit('update:modelValue', value);
+  }
+  else {
+    emit('update:modelValue', accessVal(value));
+  }
 };
 
+function accessVal (val: Record<string, any> | string) {
+  if (!val) {
+    return ""
+  }
+  if (typeof val === 'string' || typeof val === 'number') {
+    return val;
+  }
+  else {
+    return val[itemValue];
+  }
+}
+
+function accessText (val: Record<string, any> | string) {
+  if (!val) {
+    return ""
+  }
+  if (typeof val === 'string' || typeof val === 'number') {
+    return val;
+  }
+  else {
+    return val[itemText];
+  }
+}
+
 watch(() => modelValue, (value) => {
-  selected.value = items.find((person) => person.name === value);
+  selected.value = items.find((person) => accessVal(person) === value);
 })
 
 const selected = ref();
 
 if (modelValue) {
-  selected.value = items.find((person) => person.name === modelValue[itemValue]);
+  selected.value = items.find((person) => accessVal(person) === accessVal(modelValue));
 }
 else {
   selected.value = null;
@@ -118,7 +149,7 @@ const filteredItems = computed(() =>
   query.value === ''
     ? items
     : items.filter((person) =>
-        person[itemValue]
+        accessVal(person)
           .toLowerCase()
           .replace(/\s+/g, '')
           .includes(query.value.toLowerCase().replace(/\s+/g, ''))

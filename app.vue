@@ -1,6 +1,7 @@
 <template>
   <div class="bg-gray-100 h-screen relative w-full">
     <AppLoader v-if="loading" />
+    <AppAlert />
 
     <div class="w-full h-full">
       <AppHeader />

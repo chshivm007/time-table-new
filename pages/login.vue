@@ -17,7 +17,7 @@
     </div>
 
     <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-      <form class="space-y-6" action="#" method="POST" @submit="onSubmitForm">
+      <form class="space-y-6" action="#" method="POST" @submit.prevent="onSubmitForm">
         <div>
           <label for="email" class="block text-sm/6 font-medium text-gray-900"
             >Email address</label
@@ -88,15 +88,36 @@
 </template>
 
 <script setup lang="ts">
+import { hideLoader, showLoader } from '~/helpers/loader';
 
 
-const onSubmitForm = () => {
+
+const onSubmitForm = async () => {
   const paylaod = {
     email: email.value,
     password: password.value
   }
 
   console.log(paylaod);
+
+  try {
+
+    showLoader();
+    const response = await $fetch('/api/authenticate', {
+      method: 'POST',
+      body: { email: email.value, password: password.value },
+    })
+
+    console.log(response);
+
+    await navigateTo("/");
+  } catch (err) {
+    console.log(err);
+
+    alert((err as unknown as Error).message);
+  }
+
+  hideLoader();
 };
 
 const email = ref("");

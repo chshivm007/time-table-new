@@ -11,8 +11,14 @@
   },
   "dependencies": {
     "@heroicons/vue": "^2.2.0",
+    "@nuxt/types": "^2.18.1",
+    "@nuxt/ui": "^2.19.2",
     "@nuxtjs/tailwindcss": "^6.12.2",
+    "@types/mongoose": "^5.11.97",
+    "bcrypt": "^5.1.1",
+    "flowbite": "^2.5.2",
     "mongodb": "^6.11.0",
+    "mongoose": "^8.8.3",
     "mysql2": "^3.11.5",
     "nuxt": "^3.14.0",
     "puppeteer": "^23.4.0",
@@ -22,6 +28,7 @@
     "vue-router": "latest"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "nuxt-headlessui": "^1.2.0"
   }
 }
