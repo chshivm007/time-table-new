@@ -10,7 +10,7 @@
         Convert your class schedule to a time table easily.
       </p>
       <nuxt-link
-        to="/create"
+        to="/assign"
         class="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300"
       >
         Get Started
@@ -20,4 +20,6 @@
   <!-- <div></div> -->
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+
+</script>

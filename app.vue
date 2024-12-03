@@ -19,4 +19,14 @@ import { useLoadingState } from "@/helpers/loader";
 
 const loading = useLoadingState();
 console.log(loading, "loading")
+
+import { useLoggedIn } from '~/helpers/logged';
+
+const route = useRoute();
+
+console.log(route.path, "path")
+if (!useLoggedIn().value && route.path !== "/login") {
+  await navigateTo("/login");
+}
+
 </script>
